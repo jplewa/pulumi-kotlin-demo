@@ -1,0 +1,3 @@
+config:
+  gcp:project: jvm-lab
+  gcp:zone: europe-west1-b

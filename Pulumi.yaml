@@ -1,0 +1,4 @@
+name: pulumi-kotlin-demo
+runtime: java
+description: A minimal Java Pulumi program with Gradle builds (Kotlin DSL)
+main: infra
