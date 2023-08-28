@@ -5,10 +5,10 @@ import com.pulumi.core.Output
 import com.pulumi.docker.kotlin.Image
 import com.pulumi.docker.kotlin.image
 import com.pulumi.gcp.Config
+import com.pulumi.gcp.artifactregistry.kotlin.repository
 import com.pulumi.gcp.container.kotlin.Cluster
 import com.pulumi.gcp.container.kotlin.ContainerFunctions
 import com.pulumi.gcp.container.kotlin.cluster
-import com.pulumi.gcp.container.kotlin.registry
 import com.pulumi.kotlin.Pulumi
 import com.pulumi.kubernetes.apps.v1.kotlin.deployment
 import com.pulumi.kubernetes.core.v1.kotlin.Namespace
@@ -50,9 +50,15 @@ fun main() {
 }
 
 private suspend fun uploadImage(ctx: Context): Image {
-    registry(NAME)
-    val repositoryUrl = ContainerFunctions.getRegistryRepository().repositoryUrl
-    val imageName = "$repositoryUrl/$NAME-server"
+    val repository = repository(NAME) {
+        args {
+            repositoryId(NAME)
+            format("docker")
+        }
+    }
+
+    val imageUrl = Output.all(repository.location, repository.project)
+        .applyValue { (zone, project) -> "$zone-docker.pkg.dev/$project/$NAME/$NAME-server" }
 
     val image = image("$NAME-server") {
         args {
@@ -61,11 +67,9 @@ private suspend fun uploadImage(ctx: Context): Image {
                 context("../server")
                 platform("linux/amd64")
             }
-            imageName(imageName)
-            registry(null)
+            imageName(imageUrl)
         }
     }
-    ctx.export("imageName", image.imageName)
     return image
 }
 
