@@ -1,6 +1,5 @@
 package myproject
 
-import com.pulumi.Context
 import com.pulumi.core.Output
 import com.pulumi.docker.kotlin.Image
 import com.pulumi.docker.kotlin.image
@@ -21,7 +20,7 @@ private const val NAME = "pulumi-kotlin-demo"
 
 fun main() {
     Pulumi.run { ctx ->
-        val image = uploadImage(ctx)
+        val image = uploadImage()
 
         val cluster = createCluster()
 
@@ -49,7 +48,7 @@ fun main() {
     }
 }
 
-private suspend fun uploadImage(ctx: Context): Image {
+private suspend fun uploadImage(): Image {
     val repository = repository(NAME) {
         args {
             repositoryId(NAME)
