@@ -97,7 +97,9 @@ private fun createKubeconfig(cluster: Cluster): Output<String> =
     Output.all(cluster.name, cluster.endpoint, cluster.masterAuth.applyValue { it.clusterCaCertificate })
         .applyValue { (name, endpoint, caCertificate) ->
             val gcpConfig = Config()
-            val context = "${gcpConfig.project().orElseThrow()}_${gcpConfig.zone().orElseThrow()}_${name}"
+            val project = gcpConfig.project().orElseThrow()
+            val timeZone = gcpConfig.zone().orElseThrow()
+            val context = "${project}_${timeZone}_${name}"
             """apiVersion: v1
               |clusters:
               |- cluster:
