@@ -20,11 +20,3 @@ application {
         project.findProperty("mainClass") as? String ?: "myproject.AppKt"
     )
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_17
