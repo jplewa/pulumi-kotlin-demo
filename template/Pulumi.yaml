@@ -1,0 +1,4 @@
+name: pulumi-kotlin-demo
+runtime: java
+description: A template multi-module template with Docker, Kubernetes, and GCP
+main: infra
