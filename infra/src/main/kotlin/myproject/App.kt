@@ -6,13 +6,13 @@ import com.pulumi.docker.kotlin.image
 import com.pulumi.gcp.Config
 import com.pulumi.gcp.artifactregistry.kotlin.repository
 import com.pulumi.gcp.container.kotlin.Cluster
-import com.pulumi.gcp.container.kotlin.ContainerFunctions
 import com.pulumi.gcp.container.kotlin.cluster
 import com.pulumi.kotlin.Pulumi
 import com.pulumi.kubernetes.apps.v1.kotlin.deployment
 import com.pulumi.kubernetes.core.v1.kotlin.Namespace
 import com.pulumi.kubernetes.core.v1.kotlin.enums.ServiceSpecType
 import com.pulumi.kubernetes.core.v1.kotlin.namespace
+import com.pulumi.kubernetes.core.v1.kotlin.service
 import com.pulumi.kubernetes.kotlin.KubernetesProvider
 import com.pulumi.kubernetes.kotlin.kubernetesProvider
 
@@ -43,23 +43,26 @@ fun main() {
 
         val service = createService(appLabels, namespace, kubernetesProvider)
 
-        val servicePublicIp = service.status?.applyValue { it.loadBalancer?.ingress?.first()?.ip }
+        val servicePublicIp = service.status?.applyValue { it.loadBalancer?.ingress?.firstOrNull()?.ip }
         ctx.export("servicePublicIp", servicePublicIp)
     }
 }
 
 private suspend fun uploadImage(): Image {
-    val repository = repository(NAME) {
+    val repository = repository("$NAME-repository") {
         args {
             repositoryId(NAME)
             format("docker")
         }
     }
 
-    val imageUrl = Output.all(repository.location, repository.project)
-        .applyValue { (zone, project) -> "$zone-docker.pkg.dev/$project/$NAME/$NAME-server" }
+    val imageUrl = Output.format(
+        "%s-docker.pkg.dev/%s/$NAME/$NAME-server",
+        repository.location,
+        repository.project
+    )
 
-    val image = image("$NAME-server") {
+    val image = image("$NAME-image") {
         args {
             build {
                 dockerfile("../server/Dockerfile")
@@ -73,12 +76,9 @@ private suspend fun uploadImage(): Image {
 }
 
 private suspend fun createCluster(): Cluster {
-    val engineVersion = ContainerFunctions.getEngineVersions().latestMasterVersion
-    return cluster(NAME) {
+    return cluster("$NAME-cluster") {
         args {
             initialNodeCount(2)
-            minMasterVersion(engineVersion)
-            nodeVersion(engineVersion)
             nodeConfig {
                 machineType("n1-standard-1")
                 oauthScopes(
@@ -130,10 +130,10 @@ private suspend fun createDeployment(
     appLabels: Map<String, String>,
     image: Image,
     kubernetesProvider: KubernetesProvider
-) = deployment(NAME) {
+) = deployment("$NAME-deployment") {
     args {
         metadata {
-            namespace(namespace.metadata.applyValue { it.name })
+            namespace(namespace.id)
             labels(appLabels)
         }
         spec {
@@ -167,11 +167,11 @@ private suspend fun createService(
     appLabels: Map<String, String>,
     namespace: Namespace,
     kubernetesProvider: KubernetesProvider
-) = com.pulumi.kubernetes.core.v1.kotlin.service(NAME) {
+) = service("$NAME-service") {
     args {
         metadata {
             labels(appLabels)
-            namespace(namespace.metadata.applyValue { it.name })
+            namespace(namespace.id)
         }
         spec {
             type(ServiceSpecType.LoadBalancer)
