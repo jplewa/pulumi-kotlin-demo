@@ -1,6 +1,6 @@
 plugins {
     application
-    kotlin("jvm") version "1.9.0" // 1. Add Kotlin plugin
+    kotlin("jvm") version "1.9.0"
 }
 
 repositories {
@@ -16,5 +16,5 @@ dependencies {
 application {
     mainClass.set(
         project.findProperty("mainClass") as? String ?: "myproject.AppKt"
-    ) // 3. Change the main class
+    )
 }
