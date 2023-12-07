@@ -21,8 +21,8 @@ fun main() {
         // TODO #2: create a kubernetes cluster
         // val cluster = createCluster()
 
-        // TODO #3: construct an image url, format: "<zone>-docker.pkg.dev/<project-id>/<repository-name>/<image-name>"
-        // val imageUrl = TODO()
+        // TODO #3: construct an image url
+        // val imageUrl = "<zone>-docker.pkg.dev/<project-id>/<repository-name>/<image-name>"
 
         // TODO #4: create an image
         // val image = createImage()
