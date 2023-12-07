@@ -1,5 +1,6 @@
 package myproject
 
+import com.pulumi.core.Output
 import com.pulumi.docker.kotlin.Image
 import com.pulumi.gcp.artifactregistry.kotlin.Repository
 import com.pulumi.gcp.container.kotlin.Cluster
