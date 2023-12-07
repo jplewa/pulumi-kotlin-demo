@@ -25,7 +25,7 @@ fun main() {
         // val imageUrl = "<zone>-docker.pkg.dev/<project-id>/<repository-name>/<image-name>"
 
         // TODO #4: create an image
-        // val image = createImage()
+        // val image = createImage(imageUrl)
 
         // TODO #5: create a kubeconfig
         // val kubeconfig = """
