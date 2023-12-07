@@ -34,17 +34,17 @@ fun main() {
         //       |- cluster:
         //       |    certificate-authority-data: <caCertificate>
         //       |    server: https://<endpoint>
-        //       |  name: <context>
+        //       |  name: $NAME
         //       |contexts:
         //       |- context:
-        //       |    cluster: <context>
-        //       |    user: <context>
-        //       |  name: <context>
-        //       |current-context: <context>
+        //       |    cluster: $NAME
+        //       |    user: $NAME
+        //       |  name: $NAME
+        //       |current-context: $NAME
         //       |kind: Config
         //       |preferences: {}
         //       |users:
-        //       |- name: <context>
+        //       |- name: $NAME
         //       |  user:
         //       |    exec:
         //       |      apiVersion: client.authentication.k8s.io/v1beta1
