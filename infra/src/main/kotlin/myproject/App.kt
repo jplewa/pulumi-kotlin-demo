@@ -78,6 +78,7 @@ private suspend fun uploadImage(): Image {
 private suspend fun createCluster(): Cluster {
     return cluster("$NAME-cluster") {
         args {
+            deletionProtection(false)
             initialNodeCount(2)
             nodeConfig {
                 machineType("n1-standard-1")
