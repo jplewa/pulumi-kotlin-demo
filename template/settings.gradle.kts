@@ -1,3 +1,3 @@
-rootProject.name = "pulumi-kotlin-demo-yavaconf"
+rootProject.name = "pulumi-kotlin-demo"
 includeBuild("infra")
 include("server")
